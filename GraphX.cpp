@@ -168,5 +168,95 @@ class BFS {
     }
 
 };
+
+class Dijkstra {
+    vector<ll> min_dist_from_source;
+    Graph *g;
+    const ll INF = 1e18; 
+
+    public:
+      Dijkstra(Graph *g_) {
+          g = g_;
+          clear();
+      }
+
+      void clear() {
+          min_dist_from_source.clear();
+          min_dist_from_source.resize(g->N, INF);
+      }
+
+      void run(int sourceR) {
+        int source = (g->h).hash(sourceR);
+        run_internal(source);
+      }
+      void run(tuple<int,int> sourceR) {
+        int source = (g->h).hash(sourceR);
+        run_internal(source);
+      }
+      void run(tuple<int,int,int> sourceR) {
+        int source = (g->h).hash(sourceR);
+        run_internal(source);
+      }
+
+      int min_dist(int targetR){
+        int target = (g->h).hash(targetR);
+        return min_dist_internal(target);
+      }
+      int min_dist(tuple<int,int> targetR){
+        int target = (g->h).hash(targetR);
+        return min_dist_internal(target);
+      }
+      int min_dist(tuple<int,int,int> targetR){
+        int target = (g->h).hash(targetR);
+        return min_dist_internal(target);
+      }
+
+      bool is_visited(int targetR){
+        int target = (g->h).hash(targetR);
+        return is_visited_internal(target);
+      }
+      bool is_visited(tuple<int,int> targetR){
+        int target = (g->h).hash(targetR);
+        return is_visited_internal(target);
+      }
+      bool is_visited(tuple<int,int,int> targetR){
+        int target = (g->h).hash(targetR);
+        return is_visited_internal(target);
+      }
+
+  private:
+    void run_internal(int source) {
+        priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<pair<ll, int>>> pq;
+        
+        min_dist_from_source[source] = 0;
+        pq.push({0, source});
+
+        while (!pq.empty()) {
+            ll d = pq.top().first;
+            int u = pq.top().second;
+            pq.pop();
+
+            if (d > min_dist_from_source[u]) continue;
+
+            for (auto &edge : g->adj[u]) {
+                int v = edge.first;
+                ll weight = edge.second;
+
+                if (min_dist_from_source[u] + weight < min_dist_from_source[v]) {
+                    min_dist_from_source[v] = min_dist_from_source[u] + weight;
+                    pq.push({min_dist_from_source[v], v});
+                }
+            }
+        }
+    }
+
+    int min_dist_internal(int target){
+        return min_dist_from_source[target];
+    }
+
+    bool is_visited_internal(int target){
+        return min_dist_from_source[target] != INF;
+    }
+};
 //END COPYING HERE
 //********************BLACKBOX END******************
